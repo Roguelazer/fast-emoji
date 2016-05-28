@@ -6,12 +6,18 @@ import bisect
 import pickle
 import unicodedata
 import sys
+import re
 
 INDEX_FILE_NAME = os.path.expanduser(
     '~/Library/Caches/emoji_names.{0}.cache'.format('.'.join(map(str, sys.version_info)))
 )
 
 VERSION = 3
+
+
+def tokenize(string):
+    words = re.split('[\s_-]+', string.lower())
+    return words
 
 
 def alfred_xml_list(results):
@@ -47,7 +53,7 @@ def build_index():
             except ValueError:
                 continue
             prefixes = []
-            for word in name.lower().split():
+            for word in tokenize(name):
                 prefixes.append(word)
                 for index_key in (word, ' '.join(prefixes)):
                     idx = bisect.bisect_left(index, (index_key, []))
@@ -66,7 +72,7 @@ def output_key(kc):
 def main():
     query = ' '.join(sys.argv[1:])
     try:
-        with open(INDEX_FILE_NAME, 'r') as f:
+        with open(INDEX_FILE_NAME, 'rb') as f:
             version, index = pickle.load(f)
             if version < VERSION:
                 raise ValueError('Too Old!')
@@ -75,12 +81,15 @@ def main():
         with open(INDEX_FILE_NAME, 'wb') as f:
             pickle.dump((VERSION, index), f, protocol=pickle.HIGHEST_PROTOCOL)
     matches = collections.Counter()
-    for word in query.lower().split():
-        idx = bisect.bisect_left(index, (word, []))
-        while idx < len(index) and index[idx][0].startswith(word):
-            for name, char in index[idx][1]:
-                matches[(name, char)] += 1
-            idx += 1
+    prefix = []
+    for word in tokenize(query):
+        prefix.append(word)
+        for index_key in (word, ' '.join(prefix)):
+            idx = bisect.bisect_left(index, (index_key, []))
+            while idx < len(index) and index[idx][0].startswith(index_key):
+                for name, char in index[idx][1]:
+                    matches[(name, char)] += 1
+                idx += 1
     results = []
     for (name, char), count in sorted(matches.items(), key=output_key, reverse=True):
         subtitle = 'U+{0} {1}'.format(hex(ord(char))[2:].upper(), name)
