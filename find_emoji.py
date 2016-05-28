@@ -11,7 +11,7 @@ INDEX_FILE_NAME = os.path.expanduser(
     '~/Library/Caches/emoji_names.{0}.cache'.format('.'.join(map(str, sys.version_info)))
 )
 
-VERSION = 2
+VERSION = 3
 
 
 def alfred_xml_list(results):
@@ -26,6 +26,12 @@ def alfred_xml_list(results):
                 res.append('\t\t<{attr}>{value}</{attr}>'.format(attr=attr, value=item[attr]))
         res.append('\t\t<text type="copy">{copy}</text>'.format(copy=item['text']['copy']))
         res.append('\t\t<text type="largetype">{largetype}</text>'.format(largetype=item['text']['largetype']))
+        for mod_key, mod_actions in item.get('mods', {}).items():
+            mod_thing = '\t\t<mod key="{key}"'.format(key=mod_key)
+            for action, value in mod_actions.items():
+                mod_thing += ' {action}="{value}"'.format(action=action, value=value)
+            mod_thing += '/>'
+            res.append(mod_thing)
         res.append('\t</item>')
     res += ['</items>']
     return '\n'.join(res)
@@ -33,7 +39,7 @@ def alfred_xml_list(results):
 
 def build_index():
     index = []
-    for rng in ((0x1F300, 0x1F640), (0x1F680, 0x1F700), (0x1F900, 0x1FA00)):
+    for rng in ((0x1F300, 0x1F640), (0x1F680, 0x1F700), (0x1F900, 0x1FA00), (0x2600, 0x27c0)):
         for offset in range(*rng):
             char = chr(offset)
             try:
@@ -77,11 +83,17 @@ def main():
             idx += 1
     results = []
     for (name, char), count in sorted(matches.items(), key=output_key, reverse=True):
+        subtitle = 'U+{0} {1}'.format(hex(ord(char))[2:].upper(), name)
         results.append({
             'title': char,
-            'subtitle': 'U+{0} {1}'.format(hex(ord(char))[2:].upper(), name),
+            'subtitle': subtitle,
             'type': 'default',
             'arg': char,
+            'mods': {
+                'shift': {
+                    'arg': subtitle,
+                },
+            },
             'text': {
                 'copy': char,
                 'largetype': '{0} {1}'.format(char, name)
