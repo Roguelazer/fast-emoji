@@ -2,6 +2,7 @@
 
 import collections
 import os
+import json
 import bisect
 import pickle
 import unicodedata
@@ -12,35 +13,12 @@ INDEX_FILE_NAME = os.path.expanduser(
     '~/Library/Caches/emoji_names.{0}.cache'.format('.'.join(map(str, sys.version_info)))
 )
 
-VERSION = 3
+VERSION = 4
 
 
 def tokenize(string):
     words = re.split('[\s_-]+', string.lower())
     return words
-
-
-def alfred_xml_list(results):
-    res = ['<?xml version="1.0"?>', '<items>']
-    for item in results:
-        if 'uid' in item:
-            res.append('\t<item uid="uid">'.format(item=item, uid=item['uid']))
-        else:
-            res.append('\t<item>'.format(item=item))
-        for attr in ('subtitle', 'title', 'type', 'arg'):
-            if attr in item:
-                res.append('\t\t<{attr}>{value}</{attr}>'.format(attr=attr, value=item[attr]))
-        res.append('\t\t<text type="copy">{copy}</text>'.format(copy=item['text']['copy']))
-        res.append('\t\t<text type="largetype">{largetype}</text>'.format(largetype=item['text']['largetype']))
-        for mod_key, mod_actions in item.get('mods', {}).items():
-            mod_thing = '\t\t<mod key="{key}"'.format(key=mod_key)
-            for action, value in mod_actions.items():
-                mod_thing += ' {action}="{value}"'.format(action=action, value=value)
-            mod_thing += '/>'
-            res.append(mod_thing)
-        res.append('\t</item>')
-    res += ['</items>']
-    return '\n'.join(res)
 
 
 def build_index():
@@ -96,10 +74,14 @@ def main():
         results.append({
             'title': char,
             'subtitle': subtitle,
+            'autocomplete': name,
             'type': 'default',
             'arg': char,
             'mods': {
                 'shift': {
+                    'arg': subtitle,
+                },
+                'cmd': {
                     'arg': subtitle,
                 },
             },
@@ -108,7 +90,6 @@ def main():
                 'largetype': '{0} {1}'.format(char, name)
             }
         })
-    sys.stdout.write(alfred_xml_list(results))
-    sys.stdout.flush()
+    print(json.dumps({'items': results}))
 
 main()
