@@ -79,7 +79,7 @@ def main():
     for (name, char), count in sorted(matches.items(), key=output_key, reverse=True):
         results.append({
             'title': char,
-            'subtitle': name,
+            'subtitle': 'U+{0} {1}'.format(hex(ord(char))[2:].upper(), name),
             'type': 'default',
             'arg': char,
             'text': {
@@ -89,7 +89,5 @@ def main():
         })
     sys.stdout.write(alfred_xml_list(results))
     sys.stdout.flush()
-    # when Alfred 3 is out...
-    #print(json.dumps({'items': results}))
 
 main()
