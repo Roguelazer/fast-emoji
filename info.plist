@@ -17,6 +17,18 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>4F036712-34A3-46E5-A9B8-A00668D533FF</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>copy description</string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 	</dict>
@@ -33,6 +45,25 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string></string>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>4A7E9A61-A148-460C-9983-870F655FA55C</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>escaping</key>
@@ -55,6 +86,12 @@
 export PYTHONIOENCODING=utf-8
 
 python3 find_emoji.py "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Type some characters to search</string>
 				<key>type</key>
@@ -67,7 +104,7 @@ python3 find_emoji.py "{query}"</string>
 			<key>uid</key>
 			<string>DB2BDF33-4887-4C30-8E62-C02DBEA3E632</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -76,13 +113,15 @@ python3 find_emoji.py "{query}"</string>
 				<false/>
 				<key>clipboardtext</key>
 				<string></string>
+				<key>transient</key>
+				<false/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.output.clipboard</string>
 			<key>uid</key>
-			<string>4A7E9A61-A148-460C-9983-870F655FA55C</string>
+			<string>4F036712-34A3-46E5-A9B8-A00668D533FF</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 	</array>
 	<key>readme</key>
@@ -91,13 +130,24 @@ python3 find_emoji.py "{query}"</string>
 	<dict>
 		<key>4A7E9A61-A148-460C-9983-870F655FA55C</key>
 		<dict>
+			<key>xpos</key>
+			<integer>460</integer>
 			<key>ypos</key>
-			<real>100</real>
+			<integer>30</integer>
+		</dict>
+		<key>4F036712-34A3-46E5-A9B8-A00668D533FF</key>
+		<dict>
+			<key>xpos</key>
+			<integer>460</integer>
+			<key>ypos</key>
+			<integer>310</integer>
 		</dict>
 		<key>DB2BDF33-4887-4C30-8E62-C02DBEA3E632</key>
 		<dict>
+			<key>xpos</key>
+			<integer>160</integer>
 			<key>ypos</key>
-			<real>70</real>
+			<integer>160</integer>
 		</dict>
 	</dict>
 	<key>webaddress</key>
