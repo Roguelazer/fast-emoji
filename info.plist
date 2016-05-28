@@ -125,7 +125,7 @@ python3 find_emoji.py "{query}"</string>
 		</dict>
 	</array>
 	<key>readme</key>
-	<string></string>
+	<string>Quickly locate emoji! Yay!</string>
 	<key>uidata</key>
 	<dict>
 		<key>4A7E9A61-A148-460C-9983-870F655FA55C</key>
@@ -150,6 +150,8 @@ python3 find_emoji.py "{query}"</string>
 			<integer>160</integer>
 		</dict>
 	</dict>
+	<key>version</key>
+	<string>0.2</string>
 	<key>webaddress</key>
 	<string>https://www.roguelazer.com</string>
 </dict>
