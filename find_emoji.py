@@ -5,7 +5,6 @@ import os
 import json
 import bisect
 import pickle
-import unicodedata
 import sys
 import re
 
@@ -14,7 +13,10 @@ INDEX_FILE_NAME = os.path.expanduser(
 )
 IGNORED_WORDS = ('of', 'in', 'to', 'a', 'with', 'for')
 
-VERSION = 5
+VERSION = 6
+
+if sys.version_info > (3, 0):
+    unichr = chr
 
 
 def ngrams(word_list, n):
@@ -61,15 +63,38 @@ def overlap(string1, string2):
     return len(overlap) / float(max(len(bag1), len(bag2)))
 
 
+class Range(object):
+    def __init__(self, min_c, max_c):
+        self.min = min_c
+        self.max = max_c
+
+    def __contains__(self, other):
+        return other >= self.min and other <= self.max
+
+
+class Or(object):
+    def __init__(self, *clauses):
+        self.clauses = clauses
+
+    def __contains__(self, obj):
+        return any(obj in clause for clause in self.clauses)
+
+
 def build_index():
     index = []
-    for rng in ((0x1F300, 0x1F640), (0x1F680, 0x1F700), (0x1F900, 0x1FA00), (0x2600, 0x27c0)):
-        for offset in range(*rng):
-            char = chr(offset)
-            try:
-                name = unicodedata.name(char)
-            except ValueError:
+    ranges = Or(
+        Range(0x1F300, 0x1F640),
+        Range(0x1F680, 0x1F700),
+        Range(0x1F900, 0x1FA00),
+        Range(0x2600, 0x27c0)
+    )
+    with open('UnicodeData.txt', 'r') as f:
+        for line in f:
+            codepoint, name = line.split(';', 3)[:2]
+            codepoint = int(codepoint, 16)
+            if codepoint not in ranges:
                 continue
+            char = unichr(codepoint)
             for index_key in tokenize_and_ngram(name, 3):
                 idx = bisect.bisect_left(index, (index_key, []))
                 if idx < len(index) and index[idx][0] == index_key:

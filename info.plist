@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>bundleid</key>
-	<string>2E319E62-ED76-4B85-B7A3-9B3CFE265D66</string>
+	<string>com.roguelazer.fast-emoji</string>
 	<key>category</key>
 	<string>Productivity</string>
 	<key>connections</key>
@@ -151,7 +151,7 @@ python3 find_emoji.py "{query}"</string>
 		</dict>
 	</dict>
 	<key>version</key>
-	<string>0.2</string>
+	<string>0.3</string>
 	<key>webaddress</key>
 	<string>https://www.roguelazer.com</string>
 </dict>
